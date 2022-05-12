@@ -11,6 +11,7 @@ class NotifyConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         self.user_id = self.scope['url_route']['kwargs']['user_id']
         self.group_name = f'user_{self.user_id}'
+        print(self.group_name)
 
         await self.channel_layer.group_add(
             self.group_name,

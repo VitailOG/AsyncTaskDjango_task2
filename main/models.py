@@ -21,6 +21,6 @@ class FileModel(models.Model):
         f1 = kwargs['file']
         with tempfile.TemporaryFile(mode='wb+') as f:
             f1.write_to_fp(f)
-            file_name = '{}.mp3'.format('first')
+            file_name = '{}.mp3'.format('qwe')
             self.file.save(file_name, File(file=f))
         return super(FileModel, self).save()

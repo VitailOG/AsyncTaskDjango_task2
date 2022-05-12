@@ -2,6 +2,8 @@ from typing import Literal, NamedTuple
 
 from moviepy.editor import VideoFileClip, concatenate_videoclips
 
+from ..models import FileModel
+
 
 ALLOWED_METHODS = Literal[
     'concatenate',
@@ -11,26 +13,25 @@ ALLOWED_METHODS = Literal[
 
 class VideoService(NamedTuple):
     user_id: int
-    method: ALLOWED_METHODS
-    videos: list
+    method: str
+    videos: list[int]
+    args: list[int] | None
 
-    def __call__(self, *args, **kwargs):
-        pass
+    def __call__(self):
+        getattr(self, self.method)()
 
     def concatenate(self):
-        return concatenate_videoclips(self.videos)
+        videos = self._get_videos_by_id(ids=self.videos)
+        con_video = concatenate_videoclips([VideoFileClip(_.file.path) for _ in videos])
 
     def cut_video(self):
-        pass
+        video = self._get_videos_by_id(ids=self.videos)
+        video = VideoFileClip(filename=video.file.path)
+        new_video = video.subclip(*map(int, self.args))
+        print(type(new_video))
 
-
-# from moviepy.editor import VideoFileClip, concatenate_videoclips
-#
-# v1 = VideoFileClip('videoplayback.mp4')
-# v2 = VideoFileClip('Tanks fire in streets of Mariupol, Ukraine.mp4')
-#
-# v = v1.subclip(3, 10)
-# common = concatenate_videoclips([v1, v2])
-# print(v1.duration)
-# print(v2.duration)
-# print(common.duration)
+    def _get_videos_by_id(self, ids: list[int]):
+        videos = FileModel.objects.filter(id__in=ids)
+        if self.method == 'cut_video':
+            return videos.first()
+        return videos

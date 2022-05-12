@@ -1,8 +1,6 @@
 import channels.layers
 from asgiref.sync import async_to_sync
 
-from main.models import FileModel
-
 
 class BaseService:
 

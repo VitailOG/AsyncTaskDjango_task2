@@ -9,6 +9,7 @@ class LinesService(BaseService):
     def __init__(self, source_id: list, user_id: int):
         self.sources = self._get_source_by_id(source_id=source_id)
         self.group_name = f"user_{user_id}"
+        print(self.group_name)
         self.user_id = user_id
 
     def __call__(self):
